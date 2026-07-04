@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const api = import.meta.env.VITE_API_BASE_URL || '/api';
-const fallbackImage = '/images/placeholder.png';
+const fallbackImage = '/images/ryosuke.jpg';
 
 const brandLogoPaths = {
   honda: '/images/logo/honda_logo.jpg',
