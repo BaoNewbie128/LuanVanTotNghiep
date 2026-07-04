@@ -1,0 +1,343 @@
+.staff-returns-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.staff-returns-page__intro {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.staff-returns-page__intro h2 {
+  margin: 0 0 8px;
+  color: #111827;
+}
+
+.staff-returns-page__intro p {
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.staff-returns-page__meta {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #ede9fe;
+  color: #6d28d9;
+  font-weight: 600;
+}
+
+.staff-returns-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+.staff-returns-summary__card {
+  background: linear-gradient(135deg, #f8fafc 0%, #f5f3ff 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.staff-returns-summary__card span {
+  display: block;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.staff-returns-summary__card strong {
+  font-size: 1.7rem;
+  color: #111827;
+}
+
+.staff-returns-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.staff-returns-filter {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.staff-returns-filter--active,
+.staff-returns-filter:hover {
+  background: #6d28d9;
+  border-color: #6d28d9;
+  color: #fff;
+}
+
+.staff-returns-feedback,
+.staff-returns-empty {
+  padding: 18px;
+  border-radius: 14px;
+  font-weight: 500;
+}
+
+.staff-returns-feedback {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.staff-returns-empty {
+  background: #f9fafb;
+  color: #6b7280;
+  text-align: center;
+}
+
+.staff-returns-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.staff-return-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.staff-return-card__header,
+.staff-return-card__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+}
+
+.staff-return-card__header {
+  background: #faf5ff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.staff-return-card__header h3,
+.staff-return-card__header p,
+.staff-return-card__body h4,
+.staff-return-card__body p {
+  margin: 0;
+}
+
+.staff-return-card__header p,
+.staff-return-card__body p {
+  color: #6b7280;
+}
+
+.staff-return-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.staff-return-status--pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.staff-return-status--approved {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.staff-return-status--rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.staff-return-status--completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.staff-return-card__body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 22px;
+}
+
+.staff-return-card__reason {
+  line-height: 1.6;
+}
+
+.staff-return-card__image-link {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #6d28d9;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.staff-return-card__image-link:hover {
+  text-decoration: underline;
+}
+
+.staff-return-evidence-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.78);
+}
+
+.staff-return-evidence-modal__content {
+  width: min(920px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 18px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.35);
+}
+
+.staff-return-evidence-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.staff-return-evidence-modal__header h3,
+.staff-return-evidence-modal__header p {
+  margin: 0;
+}
+
+.staff-return-evidence-modal__header p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.staff-return-evidence-modal__header button {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: #111827;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.staff-return-evidence-modal__content img {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+  border-radius: 10px;
+  object-fit: contain;
+  background: #f1f5f9;
+}
+
+.staff-return-evidence-modal__content > a {
+  display: inline-block;
+  margin-top: 14px;
+  color: #6d28d9;
+  font-weight: 700;
+}
+
+.staff-return-evidence-modal__error {
+  padding: 24px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  color: #b91c1c;
+  background: #fef2f2;
+  line-height: 1.6;
+}
+
+.staff-return-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.staff-return-action-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.staff-return-action-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.staff-return-action-btn--approved {
+  background: #2563eb;
+}
+
+.staff-return-action-btn--rejected {
+  background: #dc2626;
+}
+
+.staff-return-action-btn--completed {
+  background: #16a34a;
+}
+
+.staff-returns-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.staff-returns-pagination__buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.staff-returns-pagination button {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #111827;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.staff-returns-pagination button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .staff-returns-page__intro,
+  .staff-return-card__header,
+  .staff-returns-pagination {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .staff-return-card__actions {
+    justify-content: flex-start;
+  }
+}

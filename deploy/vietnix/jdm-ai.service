@@ -1,0 +1,23 @@
+[Unit]
+Description=JDM WORLD AI service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/jdm-world/DoAnAI
+Environment=PYTHONUNBUFFERED=1
+Environment=AI_MAX_UPLOAD_MB=8
+Environment=HF_HOME=/var/cache/jdm-ai/huggingface
+Environment=TRANSFORMERS_OFFLINE=1
+ExecStart=/var/www/jdm-world/DoAnAI/.venv/bin/gunicorn --preload --workers 1 --threads 2 --timeout 120 --bind 127.0.0.1:5000 app:app
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

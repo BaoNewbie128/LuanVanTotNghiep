@@ -1,0 +1,94 @@
+.page-transition {
+  min-height: calc(100dvh - var(--site-header-height, 78px));
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.page-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition,
+  .page-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Fade in animation variants */
+.page-transition.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.page-transition.slide-in-left {
+  animation: slideInLeft 0.5s ease forwards;
+}
+
+.page-transition.slide-in-right {
+  animation: slideInRight 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Staggered children animation */
+.page-visible .stagger-item {
+  animation: staggerFadeIn 0.4s ease forwards;
+  opacity: 0;
+}
+
+.page-visible .stagger-item:nth-child(1) { animation-delay: 0.05s; }
+.page-visible .stagger-item:nth-child(2) { animation-delay: 0.1s; }
+.page-visible .stagger-item:nth-child(3) { animation-delay: 0.15s; }
+.page-visible .stagger-item:nth-child(4) { animation-delay: 0.2s; }
+.page-visible .stagger-item:nth-child(5) { animation-delay: 0.25s; }
+.page-visible .stagger-item:nth-child(6) { animation-delay: 0.3s; }
+.page-visible .stagger-item:nth-child(7) { animation-delay: 0.35s; }
+.page-visible .stagger-item:nth-child(8) { animation-delay: 0.4s; }
+.page-visible .stagger-item:nth-child(9) { animation-delay: 0.45s; }
+.page-visible .stagger-item:nth-child(10) { animation-delay: 0.5s; }
+.page-visible .stagger-item:nth-child(11) { animation-delay: 0.55s; }
+.page-visible .stagger-item:nth-child(12) { animation-delay: 0.6s; }
+
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

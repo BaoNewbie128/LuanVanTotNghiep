@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>JDM AI Recognition</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url("{{ url_for('static', filename='045d46bfa30d2023c7bc7d32c26f7eaf.jpg') }}") no-repeat center center fixed;
+    background-size:cover;
+    
+    color: white;
+    text-align: center;
+}
+
+h2 {
+    color: #00f7ff;
+    text-shadow: 0 0 10px #00f7ff;
+}
+
+.container {
+    margin-top: 30px;
+    padding: 25px;
+    display: inline-block;
+    background: rgba(20,20,20,0.95);
+    border-radius: 15px;
+    box-shadow: 0 0 20px #00f7ff33;
+}
+
+input, button {
+    margin: 8px;
+    padding: 10px;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(45deg,#ff004c,#00f7ff);
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+video, img {
+    margin-top: 10px;
+    width: 280px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #00f7ff;
+}
+
+#result {
+    margin-top: 15px;
+    padding: 10px;
+    background: black;
+    border-radius: 10px;
+    color: white;
+    min-height: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>JDM AI RECOGNITION</h2>
+
+<div class="container">
+
+<!-- UPLOAD -->
+<input type="file" id="imageInput"><br>
+<button onclick="uploadFile()">Xem trước ảnh đã upload</button>
+<button onclick="predict()">Dự đoán</button>
+<hr>
+
+<h3>Tìm xe bằng mô tả</h3>
+
+<input 
+    type="text"
+    id="textDescription"
+    placeholder="Ví dụ: blue skyline coupe twin turbo"
+    style="width:300px;"
+>
+
+<br>
+
+<button onclick="predictText()">
+    Tìm bằng mô tả
+</button>
+
+<hr>
+
+<!-- CAMERA -->
+<video id="video" autoplay></video><br>
+
+<button onclick="startCamera()">Mở camera</button>
+<button onclick="stopCamera()">Tắt camera</button>
+<button onclick="capture()">Chụp ảnh</button>
+
+<br>
+<img id="preview">
+
+<div id="result">Kết quả sẽ hiển thị ở đây...</div>
+
+</div>
+
+<script>
+let video = document.getElementById("video");
+let canvas = document.createElement("canvas");
+let preview = document.getElementById("preview");
+let stream = null;
+
+// CAMERA
+function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+    .then(s => {
+        stream = s;
+        video.srcObject = stream;
+    })
+    .catch(err => {
+        console.log(err);
+        alert("Không mở được camera");
+    });
+}
+
+function stopCamera() {
+    if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+        video.srcObject = null;
+        stream = null;
+    }
+}
+
+// CAPTURE
+function capture() {
+    if (!stream) return alert("Bật camera trước");
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(video,0,0);
+
+    canvas.toBlob(blob => {
+        let file = new File([blob],"cam.jpg",{type:"image/jpeg"});
+
+        let dt = new DataTransfer();
+        dt.items.add(file);
+        document.getElementById("imageInput").files = dt.files;
+
+        preview.src = URL.createObjectURL(blob);
+    });
+}
+
+// UPLOAD PREVIEW
+function uploadFile() {
+    let file = document.getElementById("imageInput").files[0];
+    if(!file) return alert("Chưa chọn ảnh");
+
+    preview.src = URL.createObjectURL(file);
+}
+
+// PREDICT (FIX FULL ERROR HANDLING)
+function predict() {
+    let file = document.getElementById("imageInput").files[0];
+
+    if(!file){
+        alert("Chưa có ảnh!");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("image", file);
+
+    document.getElementById("result").innerHTML = "⏳ Đang xử lý...";
+
+    fetch("/predict", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => {
+        if(!res.ok) throw new Error("Server lỗi");
+        return res.json();
+    }).then(data => {
+
+    let html = "";
+
+    data.results.forEach((car,index)=>{
+
+        html +=
+            (index+1) +
+            ". <b>" +
+            car.label +
+            "</b> - " +
+            car.confidence +
+            "%<br>";
+
+    });
+
+    document.getElementById("result").innerHTML =
+        html;
+})
+    .catch(err => {
+        console.log(err);
+        document.getElementById("result").innerHTML =
+            "Lỗi khi dự đoán (check Flask)";
+    });
+}
+function predictText() {
+
+    let description =
+        document.getElementById("textDescription").value;
+
+    if(!description){
+        alert("Nhập mô tả trước");
+        return;
+    }
+
+    document.getElementById("result").innerHTML =
+        "⏳ Đang phân tích mô tả...";
+
+    fetch("/predict_text", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            description: description
+        })
+
+    })
+
+    .then(res => {
+
+        if(!res.ok){
+            throw new Error("Server lỗi");
+        }
+
+        return res.json();
+
+    })
+
+.then(data => {
+
+    let html = "";
+
+    data.results.forEach((car,index)=>{
+
+        html +=
+            (index+1) +
+            ". <b>" +
+            car.label +
+            "</b> - " +
+            (car.score*100).toFixed(2) +
+            "%<br>";
+
+    });
+
+    document.getElementById("result").innerHTML =
+        html;
+}).catch(err => {
+
+        console.log(err);
+
+        document.getElementById("result").innerHTML =
+            "Lỗi text recognition";
+
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,415 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   DARK MODE - CRITICAL STYLES WITH HIGH SPECIFICITY
+   ============================================ */
+
+/* Force dark mode on body - highest priority */
+body.dark {
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+}
+
+/* Also target html.dark for extra coverage */
+html.dark body {
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+}
+
+/* Root wrapper should inherit body background */
+#root {
+  min-height: 100vh;
+  background-color: inherit;
+}
+
+body.dark #root {
+  background-color: #0f172a !important;
+}
+
+html.dark body #root {
+  background-color: #0f172a !important;
+}
+
+/* ============================================
+   CUSTOM DARK MODE STYLES
+   ============================================ */
+
+@layer base {
+  /* Light mode (default) */
+  :root {
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f8fafc;
+    --color-bg-card: #ffffff;
+    --color-text-primary: #1e293b;
+    --color-text-secondary: #64748b;
+    --color-border: #e2e8f0;
+    --color-shadow: rgba(0, 0, 0, 0.1);
+  }
+
+  /* Dark mode */
+  .dark {
+    --color-bg-primary: #0f172a;
+    --color-bg-secondary: #1e293b;
+    --color-bg-card: #1e293b;
+    --color-text-primary: #f1f5f9;
+    --color-text-secondary: #94a3b8;
+    --color-border: #334155;
+    --color-shadow: rgba(0, 0, 0, 0.5);
+  }
+}
+
+@layer components {
+  /* ============================================
+     FULL PAGE DARK MODE COVERAGE
+     ============================================ */
+  
+  /* Default body background in light mode */
+  body {
+    background-color: #f8fafc;
+    color: #1e293b;
+  }
+
+  /* Dark mode - apply to ALL major page containers */
+  body.dark,
+  html.dark body,
+  .dark body {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+  }
+
+  /* Hero section */
+  body.dark .hero-section,
+  html.dark .hero-section,
+  .dark .hero-section {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+  }
+
+  body.dark .hero-title,
+  body.dark .hero-description,
+  html.dark .hero-title,
+  html.dark .hero-description {
+    color: #f1f5f9 !important;
+  }
+
+  /* Home page */
+  body.dark .home-page,
+  html.dark .home-page {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+  }
+
+  /* Product cards */
+  body.dark .product-card,
+  html.dark .product-card {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .product-card:hover,
+  html.dark .product-card:hover {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  body.dark .product-brand,
+  html.dark .product-brand {
+    color: #a5b4fc !important;
+  }
+
+  body.dark .product-model,
+  html.dark .product-model {
+    color: #e2e8f0 !important;
+  }
+
+  body.dark .product-price,
+  html.dark .product-price {
+    color: #818cf8 !important;
+  }
+
+  body.dark .product-color,
+  body.dark .product-scale,
+  html.dark .product-color,
+  html.dark .product-scale {
+    color: #94a3b8 !important;
+  }
+
+  /* Section titles */
+  body.dark .section-title,
+  html.dark .section-title {
+    color: #f1f5f9 !important;
+  }
+
+  /* Category cards */
+  body.dark .category-card,
+  html.dark .category-card {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .category-name,
+  html.dark .category-name {
+    color: #f1f5f9 !important;
+  }
+
+  /* Auth pages */
+  body.dark .auth-container,
+  html.dark .auth-container {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+  }
+
+  body.dark .auth-card,
+  html.dark .auth-card {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .form-group label,
+  html.dark .form-group label {
+    color: #f1f5f9 !important;
+  }
+
+  /* Form inputs */
+  body.dark input,
+  body.dark select,
+  body.dark textarea,
+  html.dark input,
+  html.dark select,
+  html.dark textarea {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark input::placeholder,
+  body.dark textarea::placeholder,
+  html.dark input::placeholder,
+  html.dark textarea::placeholder {
+    color: #64748b !important;
+  }
+
+  body.dark input:focus,
+  body.dark select:focus,
+  body.dark textarea:focus,
+  html.dark input:focus,
+  html.dark select:focus,
+  html.dark textarea:focus {
+    border-color: #667eea !important;
+    outline: none !important;
+  }
+
+  /* Cart page */
+  body.dark .cart-page,
+  html.dark .cart-page {
+    background-color: #0f172a !important;
+  }
+
+  body.dark .cart-item,
+  html.dark .cart-item {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .cart-summary,
+  html.dark .cart-summary {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+  }
+
+  /* Product detail */
+  body.dark .product-detail-page,
+  html.dark .product-detail-page {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .product-info h1,
+  html.dark .product-info h1 {
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .product-info .price,
+  html.dark .product-info .price {
+    color: #818cf8 !important;
+  }
+
+  /* Checkout */
+  body.dark .checkout-page,
+  html.dark .checkout-page {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .checkout-form,
+  html.dark .checkout-form {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+  }
+
+  /* Admin dashboard */
+  body.dark .admin-dashboard,
+  html.dark .admin-dashboard {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .stat-card,
+  html.dark .stat-card {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .stat-value,
+  html.dark .stat-value {
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .stat-label,
+  html.dark .stat-label {
+    color: #94a3b8 !important;
+  }
+
+  /* Tables */
+  body.dark table,
+  html.dark table {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark th,
+  html.dark th {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark td,
+  html.dark td {
+    color: #f1f5f9 !important;
+    border-color: #334155 !important;
+  }
+
+  body.dark tr:hover,
+  html.dark tr:hover {
+    background-color: #334155 !important;
+  }
+
+  /* Profile page */
+  body.dark .profile-page,
+  html.dark .profile-page {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .profile-card,
+  html.dark .profile-card {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+  }
+
+  /* Notification page */
+  body.dark .notification-page,
+  html.dark .notification-page {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .notification-item,
+  html.dark .notification-item {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f1f5f9 !important;
+  }
+
+  /* Product list page */
+  body.dark .product-list-page,
+  html.dark .product-list-page {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .filter-section,
+  html.dark .filter-section {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+  }
+
+  /* Orders page */
+  body.dark .orders-page,
+  html.dark .orders-page {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+  }
+
+  body.dark .order-card,
+  html.dark .order-card {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f1f5f9 !important;
+  }
+
+  /* Skeleton loader */
+  body.dark .skeleton-card,
+  html.dark .skeleton-card {
+    background-color: #1e293b !important;
+  }
+
+  body.dark .skeleton-image,
+  body.dark .skeleton-line,
+  body.dark .skeleton-button,
+  html.dark .skeleton-image,
+  html.dark .skeleton-line,
+  html.dark .skeleton-button {
+    background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%) !important;
+    background-size: 200% 100% !important;
+  }
+
+  /* Loading spinner */
+  body.dark .loading-text,
+  html.dark .loading-text {
+    color: #a5b4fc !important;
+  }
+
+  /* Dropdown menu - always light for visibility */
+  .dropdown-menu {
+    background: white !important;
+    color: #333 !important;
+  }
+
+  .dropdown-item {
+    color: #333 !important;
+  }
+
+  .dropdown-item:hover {
+    background-color: #f5f5f5 !important;
+  }
+
+  /* Keep dropdown light even in dark mode */
+  body.dark .dropdown-menu,
+  html.dark .dropdown-menu {
+    background: white !important;
+    color: #333 !important;
+  }
+
+  body.dark .dropdown-item,
+  html.dark .dropdown-item {
+    color: #333 !important;
+  }
+}
+
+/* Smooth transitions for dark mode */
+* {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+/* But don't animate the dark mode toggle itself */
+.dark-mode-toggle,
+body.dark .dark-mode-toggle,
+html.dark .dark-mode-toggle {
+  transition: transform 0.2s ease !important;
+}

@@ -1,0 +1,70 @@
+# Secrets and machine-specific environment files
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+
+# Dependencies and virtual environments
+**/node_modules/
+backend/vendor/
+DoAnAI/venv/
+DoAnAI/.venv/
+
+# Generated builds and caches
+frontend/dist/
+backend/public/build/
+backend/public/hot
+backend/public/storage
+backend/bootstrap/cache/*.php
+!backend/bootstrap/cache/.gitignore
+backend/storage/logs/*
+!backend/storage/logs/.gitignore
+backend/storage/framework/cache/data/*
+!backend/storage/framework/cache/data/.gitignore
+backend/storage/framework/sessions/*
+!backend/storage/framework/sessions/.gitignore
+backend/storage/framework/testing/*
+!backend/storage/framework/testing/.gitignore
+backend/storage/framework/views/*
+!backend/storage/framework/views/.gitignore
+backend/storage/app/public/*
+!backend/storage/app/public/.gitignore
+DoAnAI/__pycache__/
+**/__pycache__/
+*.py[cod]
+*.log
+*.cache
+.phpunit.result.cache
+
+# Local databases and private database exports
+*.sqlite
+*.sqlite3
+jdm (1).sql
+*.sql.gz
+*.sql.zip
+
+# AI training data and non-runtime experiments
+DoAnAI/dataset/
+DoAnAI/car_model_clean_best.keras
+DoAnAI/clean_*
+DoAnAI/test.jpg
+
+# Obsolete local scratch files kept outside version control
+backend/temp_fix_faq_support.php
+backend/toJson()
+frontend/src/*_TEST.jsx
+frontend/src/pages/*_TEST.jsx
+
+# IDE and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Archives and deployment packages
+*.zip
+*.tar
+*.tar.gz
+*.tgz

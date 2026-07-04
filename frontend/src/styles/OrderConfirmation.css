@@ -1,0 +1,304 @@
+.confirmation-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.confirmation-loading,
+.confirmation-error {
+  text-align: center;
+  padding: 40px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.confirmation-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Header */
+.confirmation-header {
+  padding: 40px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+}
+
+.confirmation-header.success {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.checkmark-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  display: inline-block;
+  animation: scaleIn 0.5s ease-in-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.confirmation-header h1 {
+  margin: 0 0 10px 0;
+  font-size: 32px;
+}
+
+.confirmation-header p {
+  margin: 0;
+  font-size: 18px;
+  opacity: 0.95;
+}
+
+/* Order Info */
+.order-info {
+  padding: 30px;
+  background: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 16px;
+}
+
+.info-row .label {
+  font-weight: 600;
+  color: #333;
+}
+
+.info-row .value {
+  color: #666;
+}
+
+.status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.status-pending,
+.status-pending_payment,
+.status-cod_pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-paid {
+  background: #cfe2ff;
+  color: #084298;
+}
+
+.status-shipping {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.status-completed {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.status-cancelled {
+  background: #f8d7da;
+  color: #842029;
+}
+
+/* Items Summary */
+.items-summary {
+  padding: 30px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.items-summary h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: 80px 1fr auto auto;
+  gap: 15px;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.item-row img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.item-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.item-info .color {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.item-qty {
+  font-weight: 600;
+  color: #007bff;
+  text-align: center;
+}
+
+.item-total {
+  font-weight: 600;
+  color: #d32f2f;
+  text-align: right;
+}
+
+/* Price Breakdown */
+.price-breakdown {
+  padding: 30px;
+  background: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 16px;
+}
+
+.price-row.total {
+  padding: 15px 0;
+  border-top: 2px solid #e0e0e0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #d32f2f;
+}
+
+.price-row .discount {
+  color: #28a745;
+}
+
+/* Delivery Info */
+.delivery-info {
+  padding: 30px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.delivery-info h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.delivery-info p {
+  margin: 8px 0;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Action Buttons */
+.action-buttons {
+  padding: 30px;
+  display: flex;
+  gap: 15px;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-primary {
+  background: #28a745;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #218838;
+}
+
+.btn-secondary {
+  background: #007bff;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #0056b3;
+}
+
+/* Confirmation Note */
+.confirmation-note {
+  padding: 20px 30px;
+  background: #e7f3ff;
+  border-top: 1px solid #e0e0e0;
+  color: #0c5460;
+  font-size: 14px;
+}
+
+.confirmation-note p {
+  margin: 8px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .confirmation-container {
+    margin: 20px auto;
+  }
+
+  .item-row {
+    grid-template-columns: 60px 1fr;
+  }
+
+  .item-row img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .item-qty,
+  .item-total {
+    grid-column: span 2;
+    text-align: left;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .confirmation-header h1 {
+    font-size: 24px;
+  }
+}
