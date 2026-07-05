@@ -162,6 +162,8 @@ function uploadFile() {
     preview.src = URL.createObjectURL(file);
 }
 
+const API_BASE_URL = "https://jdm-car-recognition.onrender.com";
+
 // PREDICT (FIX FULL ERROR HANDLING)
 function predict() {
     let file = document.getElementById("imageInput").files[0];
@@ -176,7 +178,7 @@ function predict() {
 
     document.getElementById("result").innerHTML = "⏳ Đang xử lý...";
 
-    fetch("/predict", {
+    fetch(`${API_BASE_URL}/predict`, {
         method: "POST",
         body: formData
     })
@@ -221,7 +223,7 @@ function predictText() {
     document.getElementById("result").innerHTML =
         "⏳ Đang phân tích mô tả...";
 
-    fetch("/predict_text", {
+    fetch(`${API_BASE_URL}/predict_text`, {
 
         method: "POST",
 
