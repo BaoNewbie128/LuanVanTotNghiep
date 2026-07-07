@@ -1,0 +1,31 @@
+JDM WORLD - GOI TRIEN KHAI CPANEL
+
+Upload TOAN BO NOI DUNG cua thu muc release-cpanel vao Document Root:
+  /lvtnthanhbao.cnttstu.online
+
+Cau truc sau khi giai nen:
+  dist/       Ban build React
+  backend/    Laravel API
+  index.php   Cau noi request /api vao Laravel
+  .htaccess   Phan luong API, storage va React Router
+
+1. File backend/.env da duoc tao san cho domain va database hien tai.
+   BAT BUOC thay REPLACE_WITH_NEW_DATABASE_PASSWORD bang mat khau DB moi.
+   Tao email no-reply tren cPanel va thay REPLACE_WITH_EMAIL_PASSWORD.
+   APP_URL=https://lvtnthanhbao.cnttstu.online
+   FRONTEND_URL=https://lvtnthanhbao.cnttstu.online
+   CORS_ALLOWED_ORIGINS=https://lvtnthanhbao.cnttstu.online
+2. Trong Terminal cPanel:
+   cd ~/lvtnthanhbao.cnttstu.online/backend
+   composer install --no-dev --optimize-autoloader
+   mkdir -p storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/testing storage/framework/views
+   chmod -R 775 storage bootstrap/cache
+   php artisan key:generate
+   php artisan migrate --force
+   php artisan db:seed --force
+   php artisan optimize
+   chmod -R 775 storage bootstrap/cache
+3. AI chay tren Render, khong can tao Python Application tren cPanel.
+   Kiem tra ket noi sau khi deploy tai: /api/ai/health
+
+Khong commit hoac upload file .env tu may local.

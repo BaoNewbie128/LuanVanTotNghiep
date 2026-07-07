@@ -95,14 +95,24 @@ export default function HomePage() {
       );
 
       const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || result.error || `API sản phẩm trả về lỗi ${response.status}`);
+      }
 
-      setProducts(result.data);
-      setCurrentPage(result.pagination.current_page);
-      setLastPage(result.pagination.last_page);
-      setTotalProductCount(result.pagination.total ?? result.data?.length ?? 0);
+      const productData = Array.isArray(result.data) ? result.data : [];
+      const pagination = result.pagination || {};
+      const resolvedLastPage = Math.max(Number(pagination.last_page) || 1, 1);
+      const resolvedCurrentPage = Math.min(Number(pagination.current_page) || 1, resolvedLastPage);
+
+      setProducts(productData);
+      setCurrentPage(resolvedCurrentPage);
+      setLastPage(resolvedLastPage);
+      setTotalProductCount(Number(pagination.total) || productData.length);
+      setError(null);
 
     } catch (err) {
-      setError(err.message);
+      setProducts([]);
+      setError(err.message || 'Không thể tải danh sách sản phẩm.');
     } finally {
       setLoading(false);
     }

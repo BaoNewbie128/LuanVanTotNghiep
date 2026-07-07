@@ -1,0 +1,36 @@
+<IfModule mod_rewrite.c>
+    Options -MultiViews -Indexes
+    RewriteEngine On
+
+    # Preserve authentication headers for Laravel Sanctum.
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    RewriteCond %{HTTP:X-XSRF-Token} .
+    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+    # Laravel API and health-check routes.
+    RewriteCond %{REQUEST_URI} ^/(api|up)(/|$) [NC]
+    RewriteRule ^ index.php [END,QSA]
+
+    # Serve Laravel public uploads without exposing the backend source tree.
+    RewriteCond %{DOCUMENT_ROOT}/backend/storage/app/public/$1 -f
+    RewriteRule ^storage/(.+)$ backend/storage/app/public/$1 [END,NC]
+
+    # Never expose application source, environment files or the AI model directly.
+    RewriteRule ^(?:backend|ai)(?:/|$) - [F,END,NC]
+    RewriteRule (^|/)\.(?!well-known/) - [F,END]
+
+    # Serve the Vite production build from the dist directory.
+    RewriteCond %{DOCUMENT_ROOT}/dist/$1 -f [OR]
+    RewriteCond %{DOCUMENT_ROOT}/dist/$1 -d
+    RewriteRule ^(.+)$ dist/$1 [END]
+
+    # React Router fallback.
+    RewriteRule ^ dist/index.html [END]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    DirectoryIndex dist/index.html
+</IfModule>
+

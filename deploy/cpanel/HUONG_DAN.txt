@@ -1,0 +1,45 @@
+JDM WORLD - GOI TRIEN KHAI CPANEL
+
+Upload TOAN BO NOI DUNG cua thu muc release-cpanel vao Document Root:
+  /lvtnthanhbao.cnttstu.online
+
+Cau truc sau khi giai nen:
+  dist/       Ban build React
+  backend/    Laravel API
+  index.php   Cau noi request /api vao Laravel
+  .htaccess   Phan luong API, storage va React Router
+
+1. Goi cap nhat KHONG chua backend/.env de khong ghi de cau hinh va khoa bi mat tren host.
+   Lan cai dau tien, copy backend/.env.cpanel.example thanh backend/.env roi dien cac gia tri that.
+   Nhung lan cap nhat sau, giu nguyen backend/.env dang hoat dong tren host.
+   BAT BUOC thay mat khau DB, email va API key bang gia tri rieng; khong dua .env vao file ZIP.
+   APP_URL=https://lvtnthanhbao.cnttstu.online
+   FRONTEND_URL=https://lvtnthanhbao.cnttstu.online
+   CORS_ALLOWED_ORIGINS=https://lvtnthanhbao.cnttstu.online
+2. Lan cai dau tien, trong Terminal cPanel:
+   cd ~/lvtnthanhbao.cnttstu.online/backend
+   composer install --no-dev --optimize-autoloader
+   mkdir -p storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/testing storage/framework/views
+   chmod -R 775 storage bootstrap/cache
+   php artisan key:generate
+   php artisan migrate --force
+   php artisan optimize:clear
+   php artisan config:cache
+   chmod -R 775 storage bootstrap/cache
+3. Moi lan upload ban cap nhat:
+   cd ~/lvtnthanhbao.cnttstu.online/backend
+   composer install --no-dev --optimize-autoloader
+   rm -f bootstrap/cache/config.php
+   php artisan optimize:clear
+   php artisan migrate --force
+   php artisan config:cache
+   chmod -R 775 storage bootstrap/cache
+4. Khong chay php artisan key:generate lai khi cap nhat, vi se lam mat hieu luc session va du lieu ma hoa.
+   Khong chay db:seed --force tren website that neu khong chu dong muon chen du lieu mau.
+5. AI chay tren Render, khong can tao Python Application tren cPanel.
+   Kiem tra Render qua Laravel: /api/ai/health
+   Kiem tra san pham: /api/products
+   Chat chu dung Vilao; gui anh dung AI Render.
+
+Khong commit, chia se hoac upload file .env tu may local.
+Neu API loi sau khi cap nhat, xem: storage/logs/laravel.log

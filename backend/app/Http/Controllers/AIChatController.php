@@ -87,6 +87,33 @@ class AIChatController extends Controller
         'supra_mk5' => 'toyota',
     ];
 
+    public function health(): JsonResponse
+    {
+        try {
+            $response = Http::acceptJson()
+                ->connectTimeout($this->aiConnectTimeout())
+                ->timeout(min($this->aiTimeout(), 60))
+                ->get($this->aiUrl('/health'));
+
+            if (! $response->successful()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Dịch vụ AI Render đang trả về lỗi.',
+                    'status' => $response->status(),
+                ], 503);
+            }
+
+            return response()->json([
+                'success' => true,
+                'ai' => $response->json(),
+            ]);
+        } catch (Throwable $exception) {
+            Log::warning('Could not check JDM AI health', ['message' => $exception->getMessage()]);
+
+            return $this->unavailableResponse();
+        }
+    }
+
     public function chat(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -95,38 +122,14 @@ class AIChatController extends Controller
         ]);
 
         if (! $request->hasFile('image')) {
-            $explicitLabel = $this->resolveExplicitVehicleLabel($validated['message']);
-            if ($explicitLabel !== null) {
-                return $this->vehicleMatchResponse($explicitLabel, 'exact_alias');
-            }
-
-            $trainedMatch = $this->resolveTrainedTextMatch($validated['message']);
-            if ($trainedMatch !== null) {
-                if (count($trainedMatch) === 1) {
-                    return $this->vehicleMatchResponse($trainedMatch[0], 'trained_dataset');
-                }
-
-                return $this->trainedDatasetClarificationResponse($trainedMatch);
-            }
-
-            $generalAnswer = $this->answerGeneralQuestion($validated['message']);
-
-            if ($generalAnswer !== null) {
-                if (! in_array($generalAnswer['intent'], self::LOCAL_INTENTS, true)) {
-                    return $this->answerWithLlm($validated['message'], $generalAnswer);
-                }
-
-                return response()->json([
-                    'success' => true,
-                    'mode' => 'general',
-                    'intent' => $generalAnswer['intent'],
-                    'reply' => $generalAnswer['reply'],
-                    'results' => [],
-                ]);
-            }
-
+            return $this->answerWithLlm(
+                $validated['message'],
+                $this->generalAnswer(
+                    'chat',
+                    'Khách đang nhắn tin trực tiếp với trợ lý JDM World. Hãy trả lời bằng Vilao, ưu tiên dữ liệu cửa hàng nếu câu hỏi liên quan sản phẩm, giá, tồn kho, giao hàng, thanh toán hoặc đổi trả.'
+                )
+            );
         }
-
         try {
             if ($request->hasFile('image')) {
                 $mode = 'image';
@@ -219,8 +222,8 @@ class AIChatController extends Controller
         $image = $request->file('image');
 
         return Http::acceptJson()
-            ->connectTimeout(5)
-            ->timeout(120)
+            ->connectTimeout($this->aiConnectTimeout())
+            ->timeout($this->aiTimeout())
             ->attach('image', file_get_contents($image->getRealPath()), $image->getClientOriginalName())
             ->post($this->aiUrl('/predict'));
     }
@@ -228,8 +231,8 @@ class AIChatController extends Controller
     private function predictText(string $message)
     {
         return Http::acceptJson()
-            ->connectTimeout(5)
-            ->timeout(120)
+            ->connectTimeout($this->aiConnectTimeout())
+            ->timeout($this->aiTimeout())
             ->post($this->aiUrl('/predict_text'), [
                 'description' => $message,
             ]);
@@ -565,11 +568,7 @@ class AIChatController extends Controller
         }
 
         try {
-            $http = Http::withToken($apiKey)->acceptJson()->connectTimeout(8)->timeout(45);
-            $caBundle = (string) config('services.vilao_llm.ca_bundle');
-            if ($caBundle !== '') {
-                $http = $http->withOptions(['verify' => $caBundle]);
-            }
+            $http = $this->vilaoHttpClient(45);
 
             $candidateData = collect($candidates)->map(fn ($candidate) => [
                 'label' => $candidate['label'],
@@ -666,15 +665,7 @@ class AIChatController extends Controller
 
         try {
             $storeKnowledge = $this->searchStoreKnowledge($message);
-            $http = Http::withToken($apiKey)
-                ->acceptJson()
-                ->connectTimeout(8)
-                ->timeout(60);
-
-            $caBundle = (string) config('services.vilao_llm.ca_bundle');
-            if ($caBundle !== '') {
-                $http = $http->withOptions(['verify' => $caBundle]);
-            }
+            $http = $this->vilaoHttpClient(60);
 
             $response = $http->post($this->llmUrl('/chat/completions'), [
                     'model' => config('services.vilao_llm.model', 'botzalo'),
@@ -843,6 +834,25 @@ PROMPT;
         return rtrim((string) config('services.vilao_llm.url'), '/').$path;
     }
 
+    private function vilaoHttpClient(int $timeout)
+    {
+        $http = Http::withToken((string) config('services.vilao_llm.key'))
+            ->acceptJson()
+            ->connectTimeout(8)
+            ->timeout($timeout);
+        $caBundle = trim((string) config('services.vilao_llm.ca_bundle'));
+
+        if ($caBundle !== '') {
+            if (is_file($caBundle) && is_readable($caBundle)) {
+                return $http->withOptions(['verify' => $caBundle]);
+            }
+
+            Log::warning('Ignoring invalid Vilao CA bundle path', ['path' => $caBundle]);
+        }
+
+        return $http;
+    }
+
     private function llmUnavailableResponse(): JsonResponse
     {
         return response()->json([
@@ -853,14 +863,27 @@ PROMPT;
 
     private function aiUrl(string $path): string
     {
-        return rtrim((string) config('services.jdm_ai.url'), '/').$path;
+        $baseUrl = rtrim((string) config('services.jdm_ai.url'), '/');
+        $baseUrl = preg_replace('#/(health|predict|predict_text)$#', '', $baseUrl) ?? $baseUrl;
+
+        return $baseUrl.$path;
+    }
+
+    private function aiConnectTimeout(): int
+    {
+        return max(1, (int) config('services.jdm_ai.connect_timeout', 15));
+    }
+
+    private function aiTimeout(): int
+    {
+        return max(1, (int) config('services.jdm_ai.timeout', 180));
     }
 
     private function unavailableResponse(): JsonResponse
     {
         return response()->json([
             'success' => false,
-            'message' => 'Không thể kết nối tới AI. Vui lòng kiểm tra dịch vụ AI đang chạy ở cổng 5000.',
+            'message' => 'Không thể kết nối tới dịch vụ AI Render. Vui lòng thử lại sau.',
         ], 503);
     }
 }

@@ -9,10 +9,12 @@ use App\Models\CartItems;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -97,7 +99,23 @@ class AuthController extends Controller
             'phone' => 'required|unique:users,phone|regex:/^0[0-9]{9,10}$/',
             'password' => 'required|string|min:8|confirmed',
             'address' => 'required|string',
+        ], [
+            'username.required' => 'Vui lòng nhập tên người dùng.',
+            'username.max' => 'Tên người dùng không được vượt quá 100 ký tự.',
+            'username.regex' => 'Tên người dùng chỉ được chứa chữ cái, chữ số, khoảng trắng và dấu gạch ngang.',
+            'email.required' => 'Vui lòng nhập địa chỉ email.',
+            'email.email' => 'Địa chỉ email không đúng định dạng.',
+            'email.unique' => 'Địa chỉ email này đã được sử dụng.',
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
+            'phone.unique' => 'Số điện thoại này đã được sử dụng.',
+            'phone.regex' => 'Số điện thoại phải bắt đầu bằng số 0 và gồm 10 đến 11 chữ số.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
+            'address.required' => 'Vui lòng nhập địa chỉ.',
         ]);
+
+        $registeredAt = Carbon::now();
 
         $user = User::create([
             'username' => $validated['username'],
@@ -107,6 +125,8 @@ class AuthController extends Controller
             'address' => $validated['address'],
             'role' => 'customer',
             'is_active' => true,
+            'created_at' => $registeredAt,
+            'email_verified_at' => $registeredAt,
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -217,7 +237,7 @@ class AuthController extends Controller
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         $expiresAt = Carbon::now()->addMinutes(self::OTP_EXPIRATION_MINUTES);
 
-        PasswordReset::updateOrCreate(
+        $reset = PasswordReset::updateOrCreate(
             ['email' => $validated['email']],
             [
                 'otp' => Hash::make($otp),
@@ -229,10 +249,22 @@ class AuthController extends Controller
         );
 
         $otpLifetime = self::OTP_EXPIRATION_MINUTES;
-        Mail::raw("Your OTP is: $otp. Valid for $otpLifetime minutes.", function ($message) use ($validated) {
-            $message->to($validated['email'])
-                ->subject('Password Reset OTP - JDM WORLD');
-        });
+        try {
+            Mail::raw("Your OTP is: $otp. Valid for $otpLifetime minutes.", function ($message) use ($validated) {
+                $message->to($validated['email'])
+                    ->subject('Password Reset OTP - JDM WORLD');
+            });
+        } catch (Throwable $exception) {
+            $reset->delete();
+            Log::error('Could not send password reset OTP', [
+                'email' => $validated['email'],
+                'message' => $exception->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'Không thể gửi mã OTP lúc này. Vui lòng kiểm tra cấu hình email hoặc thử lại sau.',
+            ], 503);
+        }
 
         return response()->json([
             'message' => 'OTP sent to email',
@@ -267,8 +299,6 @@ class AuthController extends Controller
                 'message' => 'Invalid OTP. ' . (5 - $reset->attempts) . ' attempts remaining.',
             ], 400);
         }
-
-        $reset->update(['verified' => true]);
 
         return response()->json([
             'message' => 'OTP verified successfully. You can now reset your password.',
@@ -374,7 +404,7 @@ class AuthController extends Controller
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         $expiresAt = Carbon::now()->addMinutes(self::OTP_EXPIRATION_MINUTES);
 
-        PasswordReset::updateOrCreate(
+        $reset = PasswordReset::updateOrCreate(
             ['email' => $validated['email']],
             [
                 'otp' => Hash::make($otp),
@@ -390,10 +420,23 @@ class AuthController extends Controller
             : 'Password Reset OTP - JDM WORLD';
 
         $otpLifetime = self::OTP_EXPIRATION_MINUTES;
-        Mail::raw("Your OTP is: $otp. Valid for $otpLifetime minutes.", function ($message) use ($validated, $subject) {
-            $message->to($validated['email'])
-                ->subject($subject);
-        });
+        try {
+            Mail::raw("Your OTP is: $otp. Valid for $otpLifetime minutes.", function ($message) use ($validated, $subject) {
+                $message->to($validated['email'])
+                    ->subject($subject);
+            });
+        } catch (Throwable $exception) {
+            $reset->delete();
+            Log::error('Could not resend OTP', [
+                'email' => $validated['email'],
+                'purpose' => $validated['purpose'],
+                'message' => $exception->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'Không thể gửi lại mã OTP lúc này. Vui lòng kiểm tra cấu hình email hoặc thử lại sau.',
+            ], 503);
+        }
 
         return response()->json([
             'message' => 'OTP resent to email',

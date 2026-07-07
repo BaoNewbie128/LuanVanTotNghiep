@@ -68,3 +68,5 @@ Thumbs.db
 *.tar
 *.tar.gz
 *.tgz
+release-cpanel/
+release-register-fix/

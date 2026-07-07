@@ -21,37 +21,39 @@ function RegisterPage({ setUser }) {
     const newErrors = {};
     
     if (!formData.username) {
-      newErrors.username = 'Username is required';
+      newErrors.username = 'Vui lòng nhập tên đăng nhập.';
     } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
+      newErrors.username = 'Tên đăng nhập phải có ít nhất 3 ký tự.';
+    } else if (!/^[\p{L}\s0-9-]+$/u.test(formData.username)) {
+      newErrors.username = 'Tên chỉ được chứa chữ cái, chữ số, khoảng trắng và dấu gạch ngang.';
     }
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'Vui lòng nhập email.';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
+      newErrors.email = 'Email không đúng định dạng.';
     }
 
     if (!formData.phone) {
-      newErrors.phone = 'Phone number is required';
-    } else if (!/^[0-9]{10,11}$/.test(formData.phone)) {
-      newErrors.phone = 'Phone must be 10-11 digits';
+      newErrors.phone = 'Vui lòng nhập số điện thoại.';
+    } else if (!/^0[0-9]{9,10}$/.test(formData.phone)) {
+      newErrors.phone = 'Số điện thoại phải bắt đầu bằng 0 và gồm 10–11 chữ số.';
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 4) {
-      newErrors.password = 'Password must be at least 4 characters';
+      newErrors.password = 'Vui lòng nhập mật khẩu.';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Mật khẩu phải có ít nhất 8 ký tự.';
     }
 
     if (!formData.password_confirmation) {
-      newErrors.password_confirmation = 'Please confirm password';
+      newErrors.password_confirmation = 'Vui lòng xác nhận mật khẩu.';
     } else if (formData.password !== formData.password_confirmation) {
-      newErrors.password_confirmation = 'Passwords do not match';
+      newErrors.password_confirmation = 'Xác nhận mật khẩu không khớp.';
     }
 
     if (!formData.address) {
-      newErrors.address = 'Address is required';
+      newErrors.address = 'Vui lòng nhập địa chỉ.';
     }
 
     setErrors(newErrors);
@@ -88,13 +90,24 @@ function RegisterPage({ setUser }) {
         setUser(response.data.user);
       }
       
-      setMessage('Registration successful! Redirecting to homepage...');
+      setMessage('Đăng ký thành công! Đang chuyển về trang chủ...');
       setTimeout(() => {
         navigate('/');
       }, 1500);
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 'Registration failed';
-      setMessage(errorMsg);
+      const validationErrors = error.response?.data?.errors;
+      if (validationErrors) {
+        const normalizedErrors = Object.fromEntries(
+          Object.entries(validationErrors).map(([field, messages]) => [
+            field,
+            Array.isArray(messages) ? messages[0] : messages,
+          ]),
+        );
+        setErrors(normalizedErrors);
+        setMessage(Object.values(normalizedErrors)[0] || 'Dữ liệu đăng ký chưa hợp lệ.');
+      } else {
+        setMessage(error.response?.data?.message || 'Không thể đăng ký tài khoản.');
+      }
     } finally {
       setLoading(false);
     }
@@ -104,7 +117,7 @@ function RegisterPage({ setUser }) {
     <div className="auth-container">
       <div className="auth-card">
         <h1>ĐĂNG KÝ</h1>
-        {message && <div className={`message ${message.includes('successful') ? 'success' : 'error'}`}>{message}</div>}
+        {message && <div className={`message ${message.includes('thành công') ? 'success' : 'error'}`}>{message}</div>}
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
