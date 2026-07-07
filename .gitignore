@@ -70,3 +70,4 @@ Thumbs.db
 *.tgz
 release-cpanel/
 release-register-fix/
+.venv/
